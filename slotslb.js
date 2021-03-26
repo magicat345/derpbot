@@ -12,12 +12,12 @@ client.on('ready', () => {
     lb_channel = client.channels.cache.find(channel => channel.name === "test-leaderboard");
     
     if (lb_channel.isText) {
-        lb_channel.bulkDelete(10)
+        lb_channel.bulkDelete(70)
             .then(messages => console.log("success"))
             .catch(console.error);
     }
     
-    lb_channel.send("test leaderboard \n<@!208784519958888448> 2 \n<@!505170018556706817> 1");   
+     lb_channel.send("test leaderboard \n<@!208784519958888448> 2 \n<@!505170018556706817> 1");   
     });
 
 client.on('message', msg => {
@@ -41,18 +41,25 @@ client.on('message', msg => {
                 lb_msg = messages.first();
 
                 slots_lb_text = lb_msg.content.split(' ');
-                 
-                if (Array.isArray(slots_lb_text)) {
+                
+                // if user already has score
+                if (lb_msg.content.includes(winner.id.toString())) {
                     // find user score in lb
                     count_index = 1 + slots_lb_text.findIndex((element) => element.toString().includes(winner.id.toString()));
-                    console.log(count_index);
+
+                    // add one to score
+                    slots_lb_text[count_index] = (parseInt(slots_lb_text[count_index]) + 1).toString();
+
+                    // check for change in order
+                    
+
+                    // edit leaderboard
+                    lb_msg.edit(slots_lb_text.join(' '));
+
+                } else {
+                    // add user and score of 1 to end of lb_msg
+                    lb_msg.edit(lb_msg.content + ' \n<@' + winner.id.toString() + '> 1');
                 }
-        
-                // add one to score
-                slots_lb_text[count_index] = (parseInt(slots_lb_text[count_index]) + 1).toString();
-        
-                // edit leaderboard
-                lb_msg.edit(slots_lb_text.join(' '));
 
             })
             .catch(console.error);
