@@ -1,29 +1,63 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
 const client = new Discord.Client();
+
+const nightbot_id = "83010416610906112";
+
 let lb_channel;
-let slots_lb_dict;
 let traffic_lb_dict;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     lb_channel = client.channels.cache.find(channel => channel.name === "test-leaderboard");
+    
+    if (lb_channel.isText) {
+        lb_channel.bulkDelete(10)
+            .then(messages => console.log("success"))
+            .catch(console.error);
+    }
+    
+    lb_channel.send("test leaderboard \n<@!208784519958888448> 2 \n<@!505170018556706817> 1");   
     });
 
 client.on('message', msg => {
-    if (msg.content.includes("Congrats on winning absolutely nothing")) {
+    if (msg.content.includes("Congrats on winning absolutely nothing") && msg.author.id == nightbot_id) {
+
+        // finds user from fake mention
         var start = msg.content.indexOf('@');
-        console.log(start);
         var end = msg.content.indexOf(' ', start);
-        console.log(end);
         var winner_name = msg.content.substring(start+1, end);
-        console.log(winner_name);
         var winner = client.users.cache.find(user => user.username === winner_name);
-        console.log(winner.id);
-        lb_channel.send("testing <@" + winner.id.toString() + ">");
-        // find user
-        // add one to score
-    } else if (msg.content.includes("traffic light")) {
+
+        var lb_msg;
+        var count_index;
+        var slots_lb_text;
+
+        // mentions user
+        // lb_channel.send("testing <@" + winner.id.toString() + ">");
+
+        lb_channel.messages.fetch({limit: 1})
+            .then(messages => {
+                lb_msg = messages.first();
+
+                slots_lb_text = lb_msg.content.split(' ');
+                 
+                if (Array.isArray(slots_lb_text)) {
+                    // find user score in lb
+                    count_index = 1 + slots_lb_text.findIndex((element) => element.toString().includes(winner.id.toString()));
+                    console.log(count_index);
+                }
+        
+                // add one to score
+                slots_lb_text[count_index] = (parseInt(slots_lb_text[count_index]) + 1).toString();
+        
+                // edit leaderboard
+                lb_msg.edit(slots_lb_text.join(' '));
+
+            })
+            .catch(console.error);
+
+    } else if (msg.content.includes("traffic light POGGERS")) {
         // find user
         // add one to traffic lb
     }
