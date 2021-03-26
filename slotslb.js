@@ -11,13 +11,13 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     lb_channel = client.channels.cache.find(channel => channel.name === "test-leaderboard");
     
-    if (lb_channel.isText) {
+    if (!lb_channel.isText) {
         lb_channel.bulkDelete(70)
             .then(messages => console.log("success"))
             .catch(console.error);
     }
     
-     lb_channel.send("test leaderboard \n<@!208784519958888448> 2 \n<@!505170018556706817> 1");   
+    // lb_channel.send("test leaderboard \n<@!208784519958888448> 2 \n<@!505170018556706817> 1");   
     });
 
 client.on('message', msg => {
@@ -51,7 +51,16 @@ client.on('message', msg => {
                     slots_lb_text[count_index] = (parseInt(slots_lb_text[count_index]) + 1).toString();
 
                     // check for change in order
-                    
+                    var compare_index = count_index - 2;
+                    while (!isNaN(parseInt(slots_lb_text[compare_index]))) {
+                        if (!( parseInt(slots_lb_text[count_index]) > parseInt(slots_lb_text[compare_index]) ) ) {
+                            compare_index = compare_index+2;
+                            winner_name_and_score = slots_lb_text.splice(count_index-1, 2);
+                            slots_lb_text.splice(compare_index-1, 0, winner_name_and_score[0], winner_name_and_score[1]);
+                            break;
+                        }
+                        compare_index = compare_index - 2;
+                    }
 
                     // edit leaderboard
                     lb_msg.edit(slots_lb_text.join(' '));
