@@ -3,13 +3,13 @@ module.exports = {
 	description: 'automatically updates scores on the slot leaderboard',
 	execute(message, args) {
 
-		var lb_channel = client.channels.cache.find(channel => channel.id === ("825918595904438342"));
+		var lb_channel = message.client.channels.cache.find(channel => channel.id === ("825918595904438342"));
 		
 		// finds user from fake mention
         var start = message.content.indexOf('@');
         var end = message.content.indexOf(' ', start);
         var winner_name = message.content.substring(start+1, end);
-        var winner = client.users.cache.find(user => user.username === winner_name);
+        var winner = message.client.users.cache.find(user => user.username === winner_name);
 
         var lb_msg;
         var count_index;

@@ -2,6 +2,7 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const config = require('./config.json');
 const update_slots_lb = require('./commands/update_slots_lb');
+const nightbot_id = "83010416610906112";
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -20,25 +21,29 @@ client.on('ready', () => {
 client.on('message', msg => {
     // define args
     // define command
+    var args;
+    var command;
 
-    if (msg.content.includes("Congrats on winning absolutely nothing") && msg.author.id == nightbot_id) {
-        const args = true;
-        const command = update_slots_lb;
+    if (msg.content.includes("Congrats on winning absolutely nothing") && msg.author.id === nightbot_id) {
+        args = true;
+        command = "update_slots_lb";
     } else if (msg.content.includes("traffic light POGGERS")) {
-        const args = true;
-        const command = update_traffic_lb;
+        args = true;
+        command = "update_traffic_lb";
     } else {
-        const args = msg.content.trim().trim.split(/ +/);
-        const command = args.shift().toLowerCase();
+        args = msg.content.trim().split(/ +/);
+        command = args.shift().toLowerCase();
     }
     
-    if (!client.commands.has(command)) return;
+    if (!client.commands.has(command)) {
+        return;
+    }
 
     try {
-        client.commands.get(command).execute(message,args);
+        client.commands.get(command).execute(msg,args);
     } catch (err) {
         console.error(err);
-        msg.reply("Oops, ping merpmerp");
+        msg.reply("oops, ping merpmerp");
     }
 
     });
