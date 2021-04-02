@@ -16,8 +16,8 @@ module.exports = {
         var slots_lb_text;
 
         lb_channel.messages.fetch("826263878706003998")
-            .then(message => {
-                lb_msg = message;
+            .then(msg => {
+                lb_msg = msg;
 
                 slots_lb_text = lb_msg.content.split(' ');
                 

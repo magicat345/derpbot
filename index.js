@@ -1,7 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const config = require('./config.json');
-const update_slots_lb = require('./commands/update_slots_lb');
 const nightbot_id = "83010416610906112";
 
 const client = new Discord.Client();
@@ -31,7 +30,7 @@ client.on('message', msg => {
         args = true;
         command = "update_traffic_lb";
     } else {
-        args = msg.content.trim().split(/ +/);
+        args = msg.content.slice(config.prefix.length).trim().split(/ +/);
         command = args.shift().toLowerCase();
     }
     

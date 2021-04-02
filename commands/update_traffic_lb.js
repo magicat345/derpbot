@@ -21,8 +21,8 @@ module.exports = {
         // lb_channel.send("testing <@" + winner.id.toString() + ">");
 
         lb_channel.messages.fetch("826267588450975840")
-            .then(message => {
-                lb_msg = message;
+            .then(msg => {
+                lb_msg = msg;
 
                 slots_lb_text = lb_msg.content.split(' ');
 
