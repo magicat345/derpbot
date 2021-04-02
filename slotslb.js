@@ -1,3 +1,5 @@
+// DEPRECATED: run index.js instead, slot functionality is located in update_slots_lb.js and update_traffic_lb.js
+
 const Discord = require('discord.js');
 const config = require('./config.json');
 const client = new Discord.Client();
