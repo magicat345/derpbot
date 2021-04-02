@@ -84,7 +84,73 @@ module.exports = {
             "tv": 76,
             "television": 76,
             "t.v.": 76,
-            
+            "rainbow": 77,
+            "ufo": 78,
+            "u.f.o.": 78,
+            "alien": 79,
+            "prayer": 80,
+            "mountain": 81,
+            "satan": 82,
+            "dragon": 83,
+            "diamond": 84,
+            "platinum": 85,
+            "gold": 86,
+            "devil": 87,
+            "fence": 88,
+            "video game": 89,
+            "math": 90,
+            "robot": 91,
+            "heart": 92,
+            "electricity": 93,
+            "lightning": 94,
+            "medusa": 95,
+            "power": 96,
+            "laser": 97,
+            "nuke": 98,
+            "sky": 99,
+            "tank": 100,
+            "helicopter": 101
         }
+
+        // if user asked for help/list of items:
+        if (!args || args[0] === "help" || args[0] === "list") {
+            message.reply(dict.toString());
+            return;
+        }
+
+        // initialize variables
+        var item_a;
+        var item_b;
+
+        // determine pvp or pve
+
+        // if pvp
+        // prompt users to input item choices
+        // receive item choices (DMs?)
+
+        // if pve
+        // prompt user to input item (if they didn't already?)
+        // randomly select item
+
+        // identify winner
+
+        // check ties first
+        if (dict[item_a] === dict[item_b]) return // tie
+
+        var max_is_a = (Math.max(dict[item_a], dict[item_b]) === dist[item_a]);
+        if (Math.abs(dict[item_a] - dict[item_b] > 50)) {
+            if (max_is_a) {
+                // a wins
+            } else {
+                // b wins
+            }
+        } else if (max_is_a) {
+            // b wins
+        } else {
+            // a wins
+        }
+
+        // send message of A:item vs B/derpbot:item, item beats item so winner wins
+
     }
 }
