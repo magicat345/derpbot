@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'rps_101',
+    name: 'rps101',
     description: 'pve and pvp rock, paper, scissors using the 101 item variation',
     execute(message, args) {
         // create dictionary of item and number code
@@ -81,12 +81,9 @@ module.exports = {
             "beer": 73,
             "rain": 74,
             "water": 75,
-            "tv": 76,
             "television": 76,
-            "t.v.": 76,
             "rainbow": 77,
             "ufo": 78,
-            "u.f.o.": 78,
             "alien": 79,
             "prayer": 80,
             "mountain": 81,
@@ -113,24 +110,53 @@ module.exports = {
         }
 
         // if user asked for help/list of items:
-        if (!args || args[0] === "help" || args[0] === "list") {
-            message.reply(dict.toString());
+        if (args.length === 0 || args[0] === "help" || args[0] === "list") {
+            var result = "Please ping a user to face off against or compete against me by picking one of the following valid items: ";
+            for (const [key, value] of Object.entries(dict)) {
+                result += `${key}, `;
+            }
+            message.reply(result.slice(0,result.length - 2));
             return;
         }
 
-        // initialize variables
+        // declare variables
         var item_a;
         var item_b;
+        var valid_item = false;
 
         // determine pvp or pve
+        message.guild.members.fetch(args[0])
+            .then(user => {
+                // is pvp
+                // prompt users to input item choices
+                // receive item choices (DMs?)
+                var user_a = message.author;
+                var user_b = user;
+            })
+            .catch(() => {
+                // is pvderpbot
+                // acquire user's item
+                for (const [key, value] of Object.entries(dict)) {
+                    if (key === args[0]) {
+                        item_a = args[0];
+                        valid_item = true;
+                    }
+                }
+                // check for possible duplicate weirdness, t.v. tv and u.f.o.
 
-        // if pvp
-        // prompt users to input item choices
-        // receive item choices (DMs?)
-
-        // if pve
-        // prompt user to input item (if they didn't already?)
-        // randomly select item
+                // check to make sure item_a actually got initialized
+                if (!valid_item) {
+                    message.reply("Please choose a valid item to compete in RPS 101. Do !rps101 list to see the list of valid items.");
+                    return;
+                }
+                // randomly select item
+                const random_val = Math.floor(Math.random(101));
+                for (const [key, value] of Object.entries(dict)) {
+                    if (value === random_val) {
+                        item_b = key;
+                    }
+                }
+            });
 
         // identify winner
 
