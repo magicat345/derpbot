@@ -120,29 +120,44 @@ module.exports = {
         }
 
         // declare variables
+        var user_a = message.author;
+        var user_b = message.client.user;
         var item_a;
         var item_b;
         var valid_item = false;
 
         // determine pvp or pve
-        message.guild.members.fetch(args[0])
+        message.guild.members.fetch(args[0].slice(3, args[0].length-1))
             .then(user => {
                 // is pvp
                 // prompt users to input item choices
                 // receive item choices (DMs?)
-                var user_a = message.author;
-                var user_b = user;
+                user_b = user;
+                console.log(user_b.username);
+                console.log("hello then");
             })
-            .catch(() => {
+            .catch((error) => {
                 // is pvderpbot
+                console.log(error);
+
                 // acquire user's item
+                // check for possible duplicate weirdness, t.v. tv and u.f.o. first
+
+                if (args[0] === 't.v.' || args[0] === 'tv') {
+                    item_a = 'television';
+                    valid_item = true;
+                } else if (args[0] === 'u.f.o.') {
+                    item_a = 'ufo';
+                    valid_item = true;
+                }
+
+                // iterate to find
                 for (const [key, value] of Object.entries(dict)) {
                     if (key === args[0]) {
                         item_a = args[0];
                         valid_item = true;
                     }
                 }
-                // check for possible duplicate weirdness, t.v. tv and u.f.o.
 
                 // check to make sure item_a actually got initialized
                 if (!valid_item) {
@@ -156,27 +171,56 @@ module.exports = {
                         item_b = key;
                     }
                 }
+                console.log(item_a);
+                console.log(item_b);
             });
 
         // identify winner
+        var winner;
+        console.log(user_b.username);
 
         // check ties first
-        if (dict[item_a] === dict[item_b]) return // tie
+        if (dict[item_a] === dict[item_b]) {
+            // end it here
+            message.reply(`here's the result of your !rps101 match: It's a tie! Both ${user_a.username} `
+            + `and ${user_b.username} chose ${item_b}.`);
+            return;
+        }
 
         var max_is_a = (Math.max(dict[item_a], dict[item_b]) === dist[item_a]);
         if (Math.abs(dict[item_a] - dict[item_b] > 50)) {
             if (max_is_a) {
                 // a wins
+                winner = 'a';
             } else {
                 // b wins
+                winner = 'b';
             }
         } else if (max_is_a) {
             // b wins
+            winner = 'b';
         } else {
             // a wins
+            winner = 'a';
+        }
+
+        var winning_item;
+        var losing_item;
+        var winning_user;
+        if (winner === 'a') {
+            winning_item = item_a;
+            losing_item = item_b;
+            winning_user = user_a;
+        } else if (winner === 'b') {
+            winning_item = item_b;
+            losing_item = item_a;
+            winning_user = user_b;
         }
 
         // send message of A:item vs B/derpbot:item, item beats item so winner wins
+        message.reply(`here's the result of your !rps101 match: ${user_a.username} chose ${item_a} and ` 
+            + `${user_b.username} chose ${item_b}. Since ${winning_item} beats ${losing_item}, ${winning_user.username} `
+            + `is the victor! :HYPERS:`)
 
     }
 }
