@@ -25,9 +25,9 @@ client.on('message', msg => {
     var command;
 
     if (msg.guild.ownerID === '491596646451511307' && msg.author.id !== '821887216405184562') {
-        if (msg.author.id === '249415458606940160') {
+        /*if (msg.author.id === '249415458606940160') {
             command = 'salix';
-        } else if (msg.author.id === '456291442164498444' || msg.content.includes('sparkle') || msg.content.includes('456291442164498444')) {
+        } else */if (msg.author.id === '456291442164498444' || msg.content.includes('sparkle') || msg.content.includes('456291442164498444')) {
             command = 'sparkle';
         } else {
             args = msg.content.slice(config.prefix.length).trim().split(/ +/);
