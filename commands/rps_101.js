@@ -124,21 +124,22 @@ module.exports = {
         var user_b = message.client.user;
         var item_a;
         var item_b;
-        var valid_item = false;
+
+        var args_0 = args[0].slice(2, args[0].length-1);
+        if (args_0.startsWith('!')) {
+            args_0 = args_0.slice(1);
+        }
 
         // determine pvp or pve
-        message.guild.members.fetch(args[0].slice(3, args[0].length-1))
+        message.guild.members.fetch(args_0)
             .then(user => {
                 // is pvp
                 // prompt users to input item choices
                 // receive item choices (DMs?)
                 user_b = user;
-                console.log(user_b.username);
-                console.log("hello then");
             })
-            .catch((error) => {
+            .catch(() => {
                 // is pvderpbot
-                console.log(error);
 
                 // acquire user's item
                 // check for possible duplicate weirdness, t.v. tv and u.f.o. first
@@ -155,12 +156,11 @@ module.exports = {
                 for (const [key, value] of Object.entries(dict)) {
                     if (key === args[0]) {
                         item_a = args[0];
-                        valid_item = true;
                     }
                 }
 
                 // check to make sure item_a actually got initialized
-                if (!valid_item) {
+                if (!item_a) {
                     message.reply("Please choose a valid item to compete in RPS 101. Do !rps101 list to see the list of valid items.");
                     return;
                 }
@@ -171,13 +171,11 @@ module.exports = {
                         item_b = key;
                     }
                 }
-                console.log(item_a);
-                console.log(item_b);
             });
 
         // identify winner
         var winner;
-        console.log(user_b.username);
+        console.log(item_a);
 
         // check ties first
         if (dict[item_a] === dict[item_b]) {
