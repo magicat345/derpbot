@@ -1,7 +1,7 @@
 module.exports = {
     name: 'setpoints',
     description: "mod only override of slots or traffic leaderboard",
-    execute(message,args) {
+    async execute(message,args) {
         // check if user is allowed to edit leaderboard: merp, magicat, or frost
         const permittedUsers = ['208784519958888448', '505170018556706817', '691804974719434822'];
         if (!permittedUsers.includes(message.author.id)) {
@@ -17,24 +17,20 @@ module.exports = {
         // figure out which leaderboard
         if (args[0].includes('slot')) {
             // fetch lb_msg
-            lb_channel.messages.fetch('826263878706003998')
-                .then(msg => {
-                    lb_msg = msg;
-                })
-                .catch(() => {
-                    message.reply("oops, something went wrong while trying to access the slot leaderboard");
-                    return;
-                });
+            try {
+                lb_msg = await lb_channel.messages.fetch('826263878706003998');
+            } catch {
+                message.reply("oops, something went wrong while trying to access the slot leaderboard");
+                return;
+            }
         } else if (args[0].includes('traffic')) {
             // fetch lb_msg
-            lb_channel.messages.fetch('826267588450975840')
-                .then(msg => {
-                    lb_msg = msg;
-                })
-                .catch(() => {
-                    message.reply("oops, something went wrong while trying to access the traffic leaderboard");
-                    return;
-                });
+            try{
+                lb_msg = await lb_channel.messages.fetch('826267588450975840');
+            } catch {
+                message.reply("oops, something went wrong while trying to access the traffic leaderboard");
+                return;
+            }
         } else {
             message.reply("please give me a valid leaderboard to update as the first word you type after !setpoints.");
             return;
@@ -49,7 +45,7 @@ module.exports = {
             if (test.startsWith('!')) {
                 test = test.slice(1);
             }
-            message.guild.members.fetch(test)
+            await message.guild.members.fetch(test)
                 .then(person => {
                     user = person;
                 })
@@ -75,18 +71,20 @@ module.exports = {
             // split into array by spaces
             var leaderboard = lb_msg.content.split(' ');
             // find user.id and index of it
-            for (const item of leaderboard) {
-                if (item.includes(user.id)) {
-                    score_index = leaderboard.indexOf(item)+1;
+            leaderboard.forEach(element => {
+                if (element.toString().includes(user.id)) {
+                    score_index = leaderboard.indexOf(element)+1;
                     leaderboard[score_index] = score;
                 }
-            }
+            }); 
         } else {
             // add user and point count to end of leaderboard 
             leaderboard.push(args[1]);
             leaderboard.push(score);
             score_index = leaderboard.length-1;
         }
+        console.log(score_index);
+        console.log(leaderboard[score_index]);
         // move user to the correct spot
         while (score_index > 4 && leaderboard[score_index]>leaderboard[score_index-2]) {
             let temp_user = leaderboard[score_index-3];
@@ -107,12 +105,10 @@ module.exports = {
             leaderboard[score_index] = temp_score;
             score_index += 2;
         }
+        // actually edit the message lmao
+        lb_msg.edit(leaderboard.join(' '));
         // send message saying you did it
         message.reply("i think i did it please go check now");
-    },
-
-    async fetchinfo() {
-
     }
 
 }
