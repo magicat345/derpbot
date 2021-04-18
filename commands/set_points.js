@@ -45,15 +45,12 @@ module.exports = {
             if (test.startsWith('!')) {
                 test = test.slice(1);
             }
-            await message.guild.members.fetch(test)
-                .then(person => {
-                    user = person;
-                })
-                .catch(() => {
-                    message.reply("something went wrong while trying to locate this person, please make sure you've properly mentioned them");
-                    return;
-                }
-                );
+            try {
+                user = await message.guild.members.fetch(test);
+            } catch {
+                message.reply("something went wrong while trying to locate this person, please make sure you've properly mentioned them");
+                return;
+            }
         }
         // check score is valid
         if (isNaN(args[2])) {

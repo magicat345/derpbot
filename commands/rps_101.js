@@ -1,7 +1,7 @@
 module.exports = {
     name: 'rps101',
     description: 'pve and pvp rock, paper, scissors using the 101 item variation',
-    execute(message, args) {
+    async execute(message, args) {
         // create dictionary of item and number code
         // formula: for item number i, i wins for i+1 through i+50, loses for i+51 through i+100, tie otherwise
         // (above numbers are all mod 101)
@@ -124,6 +124,7 @@ module.exports = {
         var user_b = message.client.user;
         var item_a;
         var item_b;
+        var valid_item;
 
         var args_0 = args[0].slice(2, args[0].length-1);
         if (args_0.startsWith('!')) {
@@ -131,51 +132,78 @@ module.exports = {
         }
 
         // determine pvp or pve
-        message.guild.members.fetch(args_0)
-            .then(user => {
-                // is pvp
-                // prompt users to input item choices
-                // receive item choices (DMs?)
-                user_b = user;
-            })
-            .catch(() => {
-                // is pvderpbot
+        try {
+            user_b = await message.guild.members.fetch(args_0);
 
-                // acquire user's item
-                // check for possible duplicate weirdness, t.v. tv and u.f.o. first
+            // prompt users to input item choices
+            // receive item choices (DMs?)
+        } catch {
+            // is derpbot woo
+            user_b = message.guild.me;
 
-                if (args[0] === 't.v.' || args[0] === 'tv') {
-                    item_a = 'television';
-                    valid_item = true;
-                } else if (args[0] === 'u.f.o.') {
-                    item_a = 'ufo';
-                    valid_item = true;
+            // parse user's item
+            item_a = args[0];
+
+            // randomly select item
+            const random_val = Math.floor(Math.random(101));
+            for (const [key, value] of Object.entries(dict)) {
+                if (value === random_val) {
+                    item_b = key;
                 }
+            }
+        }
 
-                // iterate to find
-                for (const [key, value] of Object.entries(dict)) {
-                    if (key === args[0]) {
-                        item_a = args[0];
-                    }
+        // if pvp, get both items from DMs
+        if (!item_b) {
+            // check to make sure another user is mentioned
+            let regex = /<@!*[0-9]+>/
+            if (!regex.test(args[0])) {
+                message.reply("please mention a valid user to face off against.");
+                return;
+            } else {
+                var test = args[0].slice(2, args[0].length - 1);
+                if (test.startsWith('!')) {
+                    test = test.slice(1);
                 }
-
-                // check to make sure item_a actually got initialized
-                if (!item_a) {
-                    message.reply("Please choose a valid item to compete in RPS 101. Do !rps101 list to see the list of valid items.");
+                try {
+                    user_b = await message.guild.members.fetch(test);
+                } catch {
+                    message.reply("something went wrong while trying to locate this person, please make sure you've properly mentioned them");
                     return;
                 }
-                // randomly select item
-                const random_val = Math.floor(Math.random(101));
-                for (const [key, value] of Object.entries(dict)) {
-                    if (value === random_val) {
-                        item_b = key;
-                    }
+        }
+            // send dm to each user
+
+            // parse item from each dm
+
+            // do the checks to make sure items are valid
+        }
+        // else pve
+        else {
+            // validate item_a
+            // check for possible duplicate weirdness, t.v. tv and u.f.o. first
+            if (item_a === 't.v.' || item_a === 'tv') {
+                item_a = 'television';
+            } else if (item_a === 'u.f.o.') {
+                item_a = 'ufo';
+            }
+            
+            // iterate to find
+            for (const [key, value] of Object.entries(dict)) {
+                if (key === item_a) {
+                    valid_item = true;
                 }
-            });
+            }
+            
+            // check to make sure item_a actually got initialized
+            if (!item_a || !valid_item) {
+                message.reply("Please choose a valid item to compete in RPS 101. Do !rps101 list to see the list of valid items.");
+                return;
+            }
+        }
 
         // identify winner
         var winner;
-        console.log(item_a);
 
         // check ties first
         if (dict[item_a] === dict[item_b]) {
