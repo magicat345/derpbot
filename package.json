@@ -1,0 +1,23 @@
+{
+  "name": "derpbot",
+  "version": "1.0.0",
+  "description": "Multipurpose discord bot.",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/athli/botbot.git"
+  },
+  "author": "merpmerp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/athli/botbot/issues"
+  },
+  "homepage": "https://github.com/athli/botbot#readme"
+}
