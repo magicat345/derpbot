@@ -34,15 +34,14 @@ module.exports = {
                     slots_lb_text[count_index] = (parseInt(slots_lb_text[count_index]) + 1).toString();
 
                     // check for change in order
-                    var compare_index = count_index - 2;
-                    while (!isNaN(parseInt(slots_lb_text[compare_index]))) {
-                        if (!( parseInt(slots_lb_text[count_index]) > parseInt(slots_lb_text[compare_index]) ) ) {
-                            compare_index = compare_index+2;
-                            winner_name_and_score = slots_lb_text.splice(count_index-1, 2);
-                            slots_lb_text.splice(compare_index-1, 0, winner_name_and_score[0], winner_name_and_score[1]);
-                            break;
-                        }
-                        compare_index = compare_index - 2;
+                    while (count_index > 4 && slots_lb_text[count_index]>slots_lb_text[count_index-2]) {
+                        let temp_user = slots_lb_text[count_index-3];
+                        let temp_score = slots_lb_text[count_index-2];
+                        slots_lb_text[count_index-3] = slots_lb_text[count_index-1];
+                        slots_lb_text[count_index-2] = slots_lb_text[count_index];
+                        slots_lb_text[count_index-1] = temp_user;
+                        slots_lb_text[count_index] = temp_score;
+                        count_index -= 2;
                     }
 
                     // edit leaderboard
