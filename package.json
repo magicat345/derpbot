@@ -4,7 +4,9 @@
   "description": "Multipurpose discord bot.",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^12.5.1"
+    "discord.js": "^12.5.1",
+    "luxon": "^1.27.0",
+    "node-schedule": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {

@@ -109,9 +109,14 @@ module.exports = {
             "helicopter": 101
         }
 
-        // if user asked for help/list of items:
-        if (args.length === 0 || args[0] === "help" || args[0] === "list") {
-            var result = "Please ping a user to face off against or compete against me by picking one of the following valid items: ";
+        // if user asked for help:
+        if (args.length === 0 || args[0] === "help") {
+            message.reply("Please ping a user to face off against or compete against me by picking a valid item.");
+            return;
+        } 
+        // if user asked for list of items:
+        else if (args[0] === "list") {
+            var result = "Here is a list of valid items: ";
             for (const [key, value] of Object.entries(dict)) {
                 result += `${key}, `;
             }
@@ -121,85 +126,31 @@ module.exports = {
 
         // declare variables
         var user_a = message.author;
-        var user_b = message.client.user;
+        var user_b;
         var item_a;
         var item_b;
-        var valid_item;
 
-        var args_0 = args[0].slice(2, args[0].length-1);
-        if (args_0.startsWith('!')) {
-            args_0 = args_0.slice(1);
-        }
+        if (pvp) {
+            // if pvp - meaning valid person is mentioned
+            // aka check if message contains a mention at all - if no, error
+            // if yes, check to make sure is not bot/role/everyone - if is bot, error
+            // all good, initialize user_b
 
-        // determine pvp or pve
-        try {
-            user_b = await message.guild.members.fetch(args_0);
+            /*
+            per user:
+            -send dm requesting item
+            -receive dm
+            -check if dm has valid item or not
+            -if not, repeat
+            */
 
-            // prompt users to input item choices
-            // receive item choices (DMs?)
-        } catch {
-            // is derpbot woo
-            user_b = message.guild.me;
-
-            // parse user's item
-            item_a = args[0];
-
-            // randomly select item
-            const random_val = Math.floor(Math.random(101));
-            for (const [key, value] of Object.entries(dict)) {
-                if (value === random_val) {
-                    item_b = key;
-                }
-            }
-        }
-
-        // if pvp, get both items from DMs
-        if (!item_b) {
-            // check to make sure another user is mentioned
-            let regex = /<@!*[0-9]+>/
-            if (!regex.test(args[0])) {
-                message.reply("please mention a valid user to face off against.");
-                return;
-            } else {
-                var test = args[0].slice(2, args[0].length - 1);
-                if (test.startsWith('!')) {
-                    test = test.slice(1);
-                }
-                try {
-                    user_b = await message.guild.members.fetch(test);
-                } catch {
-                    message.reply("something went wrong while trying to locate this person, please make sure you've properly mentioned them");
-                    return;
-                }
-        }
-            // send dm to each user
-
-            // parse item from each dm
-
-            // do the checks to make sure items are valid
-        }
-        // else pve
-        else {
-            // validate item_a
-            // check for possible duplicate weirdness, t.v. tv and u.f.o. first
-            if (item_a === 't.v.' || item_a === 'tv') {
-                item_a = 'television';
-            } else if (item_a === 'u.f.o.') {
-                item_a = 'ufo';
-            }
-            
-            // iterate to find
-            for (const [key, value] of Object.entries(dict)) {
-                if (key === item_a) {
-                    valid_item = true;
-                }
-            }
-            
-            // check to make sure item_a actually got initialized
-            if (!item_a || !valid_item) {
-                message.reply("Please choose a valid item to compete in RPS 101. Do !rps101 list to see the list of valid items.");
-                return;
-            }
+        } else if (pve) {
+            // else if pve - meaning message contains valid item
+            // if no, error
+        } else {
+            // else error, let user know.
+            message.reply("Please ping a user to face off against or compete against me by picking a valid item.");
+            return;
         }
 
         // identify winner
