@@ -10,7 +10,7 @@ module.exports = {
         var end = message.content.indexOf(' ', start);
         var winner_name = message.content.substring(start+1, end);
         var winner = message.client.users.cache.find(user => user.username === winner_name);
-        var points = message.content.match(/\d+\b/)[1];
+        var points = message.content.match(/\d+\b/)[1] ?? 0;
 
         var lb_msg;
         var count_index;
