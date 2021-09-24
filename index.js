@@ -23,15 +23,20 @@ client.on('message', msg => {
     var args;
     var command;
 
-    if (msg.content.includes("Congrats on winning absolutely nothing") && msg.author.id === nightbot_id) {
-        args = true;
-        command = "update_slots_lb";
-    } else if (msg.content.includes("traffic light POGGERS")) {
-        args = true;
-        command = "update_traffic_lb";
-    } else {
-        args = msg.content.slice(process.env.PREFIX.length).trim().split(/ +/);
-        command = args.shift().toLowerCase();
+    if (msg.author.id === nightbot_id) {
+        if (msg.content.includes("Congrats on winning absolutely nothing")) {
+            args = true;
+            command = "update_slots_lb";
+        } else if (msg.content.includes("traffic light POGGERS")) {
+            args = true;
+            command = "update_traffic_lb";
+        } else if (msg.content.includes(`You won ${/\d+/} points!`)) {
+            args = true;
+            command = "update_roulette_lb";
+        } else {
+            args = msg.content.slice(process.env.PREFIX.length).trim().split(/ +/);
+            command = args.shift().toLowerCase();
+        }
     }
     
     if (!client.commands.has(command)) {
